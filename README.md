@@ -1,6 +1,6 @@
 # Real-Time Security Dashboard
 
-A local-first MVP cybersecurity/fraud detection dashboard for small-to-medium businesses.
+A local-first MVP cybersecurity/fraud detection application.
 
 ## Features
 
@@ -27,18 +27,13 @@ A local-first MVP cybersecurity/fraud detection dashboard for small-to-medium bu
 
 ## Quick Start
 
-### Prerequisites
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
-
 ### Backend Setup
 ```bash
 cd backend
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -115,7 +110,7 @@ real-time-security/
 - Audit logging for security events
 - HTTPS-ready configuration
 
-## Fraud Detection Rules
+## Fraud Detection Rules (Current)
 
 The system implements several fraud detection rules:
 
