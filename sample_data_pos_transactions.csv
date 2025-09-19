@@ -1,0 +1,16 @@
+transaction_id,date,time,amount,payment_method,cashier_id,customer_id,item_description,store_location
+POS001,2024-01-15,09:30:00,12.99,cash,EMP001,CUST001,Coffee and Muffin,Main Store
+POS002,2024-01-15,09:31:00,12.99,cash,EMP001,CUST001,Coffee and Muffin,Main Store
+POS003,2024-01-15,09:32:00,12.99,cash,EMP001,CUST001,Coffee and Muffin,Main Store
+POS004,2024-01-15,10:15:00,45.50,credit_card,EMP002,CUST002,Shirt and Pants,Main Store
+POS005,2024-01-15,10:16:00,45.50,credit_card,EMP002,CUST002,Shirt and Pants,Main Store
+POS006,2024-01-15,11:45:00,8.99,debit_card,EMP003,CUST003,Magazine,Main Store
+POS007,2024-01-15,14:20:00,250.00,credit_card,EMP004,CUST004,Designer Handbag,Main Store
+POS008,2024-01-15,02:30:00,25.00,cash,EMP005,CUST005,Snacks and Drinks,Main Store
+POS009,2024-01-15,02:31:00,25.00,cash,EMP005,CUST005,Snacks and Drinks,Main Store
+POS010,2024-01-15,02:32:00,25.00,cash,EMP005,CUST005,Snacks and Drinks,Main Store
+POS011,2024-01-15,15:30:00,15.99,credit_card,EMP006,CUST006,Lunch Combo,Main Store
+POS012,2024-01-15,15:31:00,15.99,credit_card,EMP006,CUST006,Lunch Combo,Main Store
+POS013,2024-01-15,16:00:00,89.99,credit_card,EMP007,CUST007,Electronics Accessory,Main Store
+POS014,2024-01-15,16:01:00,89.99,credit_card,EMP007,CUST007,Electronics Accessory,Main Store
+POS015,2024-01-15,18:45:00,22.50,debit_card,EMP008,CUST008,Books and Supplies,Main Store

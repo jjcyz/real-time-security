@@ -1,0 +1,16 @@
+ID,Date,Amount,Store,Method,Customer,IP,Device
+MIX001,15/01/2024,25.99,Starbucks,Credit Card,john@email.com,192.168.1.100,Chrome
+MIX002,15/01/2024,25.99,Starbucks,Credit Card,john@email.com,192.168.1.100,Chrome
+MIX003,15/01/2024,25.99,Starbucks,Credit Card,john@email.com,192.168.1.100,Chrome
+MIX004,15/01/2024,150.00,Best Buy,Debit Card,jane@email.com,10.0.0.50,Safari
+MIX005,15/01/2024,150.00,Best Buy,Debit Card,jane@email.com,10.0.0.50,Safari
+MIX006,15/01/2024,89.99,Amazon,PayPal,bob@email.com,172.16.0.25,Firefox
+MIX007,15/01/2024,2500.00,Luxury Store,Credit Card,alice@email.com,203.0.113.10,Chrome
+MIX008,15/01/2024,75.50,Gas Station,Cash,charlie@email.com,198.51.100.5,Mobile
+MIX009,15/01/2024,75.50,Gas Station,Cash,charlie@email.com,198.51.100.5,Mobile
+MIX010,15/01/2024,75.50,Gas Station,Cash,charlie@email.com,198.51.100.5,Mobile
+MIX011,15/01/2024,45.00,McDonald's,Credit Card,diana@email.com,192.0.2.15,Chrome
+MIX012,15/01/2024,45.00,McDonald's,Credit Card,diana@email.com,192.0.2.15,Chrome
+MIX013,15/01/2024,1200.00,Electronics Store,Credit Card,steve@email.com,203.0.113.20,Chrome
+MIX014,15/01/2024,1200.00,Electronics Store,Credit Card,steve@email.com,203.0.113.20,Chrome
+MIX015,15/01/2024,35.99,Target,Debit Card,tony@email.com,198.51.100.10,Safari

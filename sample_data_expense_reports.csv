@@ -1,0 +1,16 @@
+expense_id,employee_id,date,amount,description,category,receipt_number,approved_by,status
+EXP001,EMP001,2024-01-15,25.99,Client Lunch,Meals,RCP001,MANAGER001,Approved
+EXP002,EMP001,2024-01-15,25.99,Client Lunch,Meals,RCP001,MANAGER001,Approved
+EXP003,EMP001,2024-01-15,25.99,Client Lunch,Meals,RCP001,MANAGER001,Approved
+EXP004,EMP002,2024-01-15,45.50,Office Supplies,Supplies,RCP002,MANAGER002,Approved
+EXP005,EMP002,2024-01-15,45.50,Office Supplies,Supplies,RCP002,MANAGER002,Approved
+EXP006,EMP003,2024-01-15,8.99,Postage,Shipping,RCP003,MANAGER003,Approved
+EXP007,EMP004,2024-01-15,250.00,Client Entertainment,Entertainment,RCP004,MANAGER001,Approved
+EXP008,EMP005,2024-01-15,25.00,Gas for Delivery,Travel,RCP005,MANAGER002,Approved
+EXP009,EMP005,2024-01-15,25.00,Gas for Delivery,Travel,RCP005,MANAGER002,Approved
+EXP010,EMP005,2024-01-15,25.00,Gas for Delivery,Travel,RCP005,MANAGER002,Approved
+EXP011,EMP006,2024-01-15,15.99,Team Lunch,Meals,RCP006,MANAGER003,Approved
+EXP012,EMP006,2024-01-15,15.99,Team Lunch,Meals,RCP006,MANAGER003,Approved
+EXP013,EMP007,2024-01-15,89.99,Software License,Technology,RCP007,MANAGER001,Approved
+EXP014,EMP007,2024-01-15,89.99,Software License,Technology,RCP007,MANAGER001,Approved
+EXP015,EMP008,2024-01-15,22.50,Office Snacks,Supplies,RCP008,MANAGER002,Approved

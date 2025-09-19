@@ -1,0 +1,16 @@
+transaction_id,date,time,amount,currency,merchant,location,payment_method,user_id,customer_name,ip_address,device_info
+TXN001,2024-01-15,09:30:00,25.99,USD,Starbucks Coffee,123 Main St,credit_card,USER001,john.doe@email.com,192.168.1.100,Chrome/Windows
+TXN002,2024-01-15,09:31:00,25.99,USD,Starbucks Coffee,123 Main St,credit_card,USER001,john.doe@email.com,192.168.1.100,Chrome/Windows
+TXN003,2024-01-15,09:32:00,25.99,USD,Starbucks Coffee,123 Main St,credit_card,USER001,john.doe@email.com,192.168.1.100,Chrome/Windows
+TXN004,2024-01-15,10:15:00,150.00,USD,Best Buy,456 Tech Ave,debit_card,USER002,jane.smith@email.com,10.0.0.50,Safari/Mac
+TXN005,2024-01-15,10:16:00,150.00,USD,Best Buy,456 Tech Ave,debit_card,USER002,jane.smith@email.com,10.0.0.50,Safari/Mac
+TXN006,2024-01-15,11:45:00,89.99,USD,Amazon,Online Store,paypal,USER003,bob.wilson@email.com,172.16.0.25,Firefox/Linux
+TXN007,2024-01-15,14:20:00,2500.00,USD,Luxury Watch Store,789 Premium Blvd,credit_card,USER004,alice.johnson@email.com,203.0.113.10,Chrome/Windows
+TXN008,2024-01-15,02:30:00,75.50,USD,Gas Station,321 Highway Rd,cash,USER005,charlie.brown@email.com,198.51.100.5,Mobile App
+TXN009,2024-01-15,02:31:00,75.50,USD,Gas Station,321 Highway Rd,cash,USER005,charlie.brown@email.com,198.51.100.5,Mobile App
+TXN010,2024-01-15,02:32:00,75.50,USD,Gas Station,321 Highway Rd,cash,USER005,charlie.brown@email.com,198.51.100.5,Mobile App
+TXN011,2024-01-15,15:30:00,45.00,USD,McDonald's,555 Fast Food St,credit_card,USER006,diana.prince@email.com,192.0.2.15,Chrome/Android
+TXN012,2024-01-15,15:31:00,45.00,USD,McDonald's,555 Fast Food St,credit_card,USER006,diana.prince@email.com,192.0.2.15,Chrome/Android
+TXN013,2024-01-15,16:00:00,1200.00,USD,Electronics Store,999 Gadget Way,credit_card,USER007,steve.rogers@email.com,203.0.113.20,Chrome/Windows
+TXN014,2024-01-15,16:01:00,1200.00,USD,Electronics Store,999 Gadget Way,credit_card,USER007,steve.rogers@email.com,203.0.113.20,Chrome/Windows
+TXN015,2024-01-15,18:45:00,35.99,USD,Target,777 Retail Rd,debit_card,USER008,tony.stark@email.com,198.51.100.10,Safari/iOS
