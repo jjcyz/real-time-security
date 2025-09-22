@@ -1,26 +1,29 @@
-"""Fraud detection service with various detection rules."""
+"""Enhanced fraud detection service with intelligent rule selection and execution."""
 
 import pandas as pd
 from typing import List, Dict, Any, Tuple
-from datetime import datetime, timedelta
+from datetime import datetime
 from sqlalchemy.orm import Session
-from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import StandardScaler
-import numpy as np
 
 from ..models.transaction import Transaction
 from ..models.alert import Alert, AlertSeverity, AlertStatus
 from ..models.uploaded_file import UploadedFile
+from .rule_router import rule_router, RuleExecutionPlan
+from .schema_canonicalizer import schema_canonicalizer
+from .fast_signals import fast_signal_engine
 
 
-class FraudDetectionService:
-    """Service for detecting fraudulent transactions using various rules."""
+class EnhancedFraudDetectionService:
+    """Enhanced fraud detection service with intelligent rule selection."""
 
     def __init__(self, db: Session):
         self.db = db
+        self.rule_router = rule_router
+        self.schema_canonicalizer = schema_canonicalizer
+        self.fast_signal_engine = fast_signal_engine
 
     def analyze_file(self, file_id: int, rules: List[str] = None) -> Dict[str, Any]:
-        """Analyze all transactions in a file for fraud."""
+        """Analyze file with intelligent rule selection and execution."""
         start_time = datetime.now()
 
         # Get the uploaded file
@@ -41,33 +44,57 @@ class FraudDetectionService:
                 "alerts_created": 0,
                 "analysis_time": 0,
                 "rules_applied": [],
-                "summary": {}
+                "summary": {},
+                "execution_plan": {}
             }
 
-        # Convert to DataFrame for analysis
+        # Convert to DataFrame
         df = self._transactions_to_dataframe(transactions)
-        print(f"Created DataFrame with {len(df)} rows and columns: {list(df.columns)}")
 
-        # Apply fraud detection rules
-        if rules is None:
-            rules = [
-                "duplicate_transactions",
-                "high_value_transactions",
-                "off_hours_transactions",
-                "rapid_successive_transactions",
-                "anomaly_detection"
-            ]
+        # Canonicalize schema and get file metadata
+        canonical_df, file_metadata = self.schema_canonicalizer.canonicalize_schema(df)
 
-        print(f"Applying fraud detection rules: {rules}")
+        # Create execution plan
+        if rules:
+            # Use specified rules if provided
+            execution_plan = RuleExecutionPlan(
+                rules_to_execute=rules,
+                estimated_cost=0,
+                risk_threshold=0.3,
+                early_termination_threshold=0.8,
+                execution_order=rules
+            )
+        else:
+            # Use intelligent rule selection
+            execution_plan = self.rule_router.create_execution_plan(canonical_df, file_metadata.__dict__)
+
+        print(f"Execution plan: {len(execution_plan.rules_to_execute)} rules, "
+              f"estimated cost: {execution_plan.estimated_cost}ms")
+
+        # Execute rules
         suspicious_transactions = set()
         alerts_created = 0
+        current_risk_score = file_metadata.risk_score
 
-        for rule in rules:
-            print(f"\n--- Applying rule: {rule} ---")
-            rule_suspicious, rule_alerts = self._apply_rule(rule, df, transactions, file_id)
+        for rule_name in execution_plan.execution_order:
+            print(f"Executing rule: {rule_name}")
+
+            # Check for early termination
+            if self.rule_router.should_terminate_early(current_risk_score,
+                                                     execution_plan.early_termination_threshold):
+                print(f"Early termination triggered at risk score {current_risk_score}")
+                break
+
+            # Execute rule
+            rule_suspicious, rule_alerts, rule_risk_contribution = self._execute_rule(
+                rule_name, canonical_df, transactions, file_id
+            )
+
             suspicious_transactions.update(rule_suspicious)
             alerts_created += rule_alerts
-            print(f"Rule {rule}: {rule_alerts} alerts, {len(rule_suspicious)} suspicious transactions")
+            current_risk_score += rule_risk_contribution * 0.1  # Accumulate risk
+
+            print(f"Rule {rule_name}: {rule_alerts} alerts, {len(rule_suspicious)} suspicious transactions")
 
         # Update transaction records
         for transaction in transactions:
@@ -83,17 +110,29 @@ class FraudDetectionService:
 
         analysis_time = (datetime.now() - start_time).total_seconds()
 
+        # Get execution statistics
+        execution_stats = self.rule_router.get_rule_execution_stats(execution_plan)
+
         return {
             "file_id": file_id,
             "total_transactions": len(transactions),
             "suspicious_count": len(suspicious_transactions),
             "alerts_created": alerts_created,
             "analysis_time": analysis_time,
-            "rules_applied": rules,
+            "rules_applied": execution_plan.rules_to_execute,
+            "execution_plan": execution_stats,
+            "file_metadata": {
+                "file_type": str(file_metadata.file_type),
+                "confidence": float(file_metadata.confidence),
+                "risk_score": float(file_metadata.risk_score),
+                "has_timestamp": bool(file_metadata.has_timestamp),
+                "has_amount": bool(file_metadata.has_amount),
+                "has_user_id": bool(file_metadata.has_user_id)
+            },
             "summary": {
-                "suspicious_percentage": len(suspicious_transactions) / len(transactions) * 100,
-                "average_risk_score": np.mean([t.risk_score for t in transactions]),
-                "high_risk_count": len([t for t in transactions if t.risk_score > 0.7])
+                "suspicious_percentage": float(len(suspicious_transactions) / len(transactions) * 100),
+                "average_risk_score": float(current_risk_score),
+                "high_risk_count": int(len([t for t in transactions if t.risk_score > 0.7]))
             }
         }
 
@@ -114,20 +153,27 @@ class FraudDetectionService:
             })
         return pd.DataFrame(data)
 
-    def _apply_rule(self, rule_name: str, df: pd.DataFrame, transactions: List[Transaction], file_id: int) -> Tuple[set, int]:
-        """Apply a specific fraud detection rule."""
-        if rule_name == "duplicate_transactions":
-            return self._detect_duplicate_transactions(df, transactions, file_id)
-        elif rule_name == "high_value_transactions":
-            return self._detect_high_value_transactions(df, transactions, file_id)
-        elif rule_name == "off_hours_transactions":
-            return self._detect_off_hours_transactions(df, transactions, file_id)
-        elif rule_name == "rapid_successive_transactions":
-            return self._detect_rapid_successive_transactions(df, transactions, file_id)
-        elif rule_name == "anomaly_detection":
-            return self._detect_anomalies(df, transactions, file_id)
+    def _execute_rule(self, rule_name: str, df: pd.DataFrame, transactions: List[Transaction],
+                     file_id: int) -> Tuple[set, int, float]:
+        """Execute a specific rule and return results."""
+        # Map rule names to methods
+        rule_methods = {
+            "duplicate_transactions": self._detect_duplicate_transactions,
+            "high_value_transactions": self._detect_high_value_transactions,
+            "off_hours_transactions": self._detect_off_hours_transactions,
+            "rapid_successive_transactions": self._detect_rapid_successive_transactions,
+            "anomaly_detection": self._detect_anomalies,
+            "inventory_movement_anomalies": self._detect_inventory_movement_anomalies,
+        }
+
+        if rule_name in rule_methods:
+            suspicious_ids, alerts_created = rule_methods[rule_name](df, transactions, file_id)
+            # Estimate risk contribution based on alerts created
+            risk_contribution = min(alerts_created * 0.1, 1.0)
+            return suspicious_ids, alerts_created, risk_contribution
         else:
-            return set(), 0
+            print(f"Unknown rule: {rule_name}")
+            return set(), 0, 0.0
 
     def _detect_duplicate_transactions(self, df: pd.DataFrame, transactions: List[Transaction], file_id: int) -> Tuple[set, int]:
         """Detect duplicate transactions based on amount, merchant, and timestamp."""
@@ -279,7 +325,7 @@ class FraudDetectionService:
             user_transactions['time_diff'] = pd.to_datetime(user_transactions['timestamp']).diff()
 
             # Find transactions within 5 minutes
-            rapid_transactions = user_transactions[user_transactions['time_diff'] < timedelta(minutes=5)]
+            rapid_transactions = user_transactions[user_transactions['time_diff'] < pd.Timedelta(minutes=5)]
 
             if len(rapid_transactions) > 1:
                 transaction_ids = rapid_transactions['id'].tolist()
@@ -308,6 +354,10 @@ class FraudDetectionService:
 
     def _detect_anomalies(self, df: pd.DataFrame, transactions: List[Transaction], file_id: int) -> Tuple[set, int]:
         """Detect anomalies using machine learning."""
+        from sklearn.ensemble import IsolationForest
+        from sklearn.preprocessing import StandardScaler
+        import numpy as np
+
         suspicious_ids = set()
         alerts_created = 0
 
@@ -354,6 +404,44 @@ class FraudDetectionService:
                     "count": len(anomalous_indices),
                     "contamination": 0.1,
                     "algorithm": "IsolationForest"
+                }
+            )
+            self.db.add(alert)
+            alerts_created += 1
+
+        return suspicious_ids, alerts_created
+
+    def _detect_inventory_movement_anomalies(self, df: pd.DataFrame, transactions: List[Transaction], file_id: int) -> Tuple[set, int]:
+        """Detect unusual inventory movement patterns."""
+        suspicious_ids = set()
+        alerts_created = 0
+
+        # Check if we have quantity data
+        if 'raw_quantity' not in df.columns:
+            return suspicious_ids, alerts_created
+
+        # Look for unusual quantity patterns
+        quantities = df['raw_quantity'].dropna()
+        if len(quantities) < 5:
+            return suspicious_ids, alerts_created
+
+        # Check for negative quantities (suspicious)
+        negative_quantities = df[df['raw_quantity'] < 0]
+        if len(negative_quantities) > 0:
+            transaction_ids = negative_quantities['id'].tolist()
+            suspicious_ids.update(transaction_ids)
+
+            alert = Alert(
+                title=f"Inventory Movement Anomalies Detected",
+                description=f"Found {len(negative_quantities)} transactions with negative quantities",
+                severity=AlertSeverity.HIGH,
+                rule_name="inventory_movement_anomalies",
+                confidence_score=0.9,
+                risk_score=0.8,
+                transaction_ids=transaction_ids,
+                alert_metadata={
+                    "count": len(negative_quantities),
+                    "anomaly_type": "negative_quantities"
                 }
             )
             self.db.add(alert)

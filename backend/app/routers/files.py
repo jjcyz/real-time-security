@@ -14,7 +14,7 @@ from ..models.uploaded_file import UploadedFile, FileStatus
 from ..models.transaction import Transaction
 from ..models.schemas import UploadedFileResponse
 from ..utils.auth import get_current_active_user
-from ..services.fraud_detection import FraudDetectionService
+from ..services.enhanced_fraud_detection import EnhancedFraudDetectionService
 
 router = APIRouter(prefix="/files", tags=["file management"])
 
@@ -276,8 +276,8 @@ def analyze_file_for_fraud(
             detail="File must be successfully processed before analysis"
         )
 
-    # Run fraud detection
-    fraud_service = FraudDetectionService(db)
+    # Run enhanced fraud detection
+    fraud_service = EnhancedFraudDetectionService(db)
     result = fraud_service.analyze_file(file_id)
 
     return result

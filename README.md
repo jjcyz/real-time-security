@@ -42,12 +42,15 @@ pip install -r requirements.txt
 cp env.example .env
 
 # Start the server
-uvicorn main:app --reload
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The backend will be available at `http://localhost:8000`
 - API Documentation: `http://localhost:8000/docs`
 - Alternative docs: `http://localhost:8000/redoc`
+- Health check: `http://localhost:8000/health`
+
+**Note**: The server binds to `0.0.0.0:8000` but is accessed via `localhost:8000` in the browser.
 
 ### Frontend Setup
 ```bash
