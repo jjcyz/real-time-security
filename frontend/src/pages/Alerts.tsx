@@ -154,11 +154,11 @@ export default function Alerts() {
           >
             <div className="card-content">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="flex items-center">
                   <div className="stat-icon bg-gradient-to-br from-red-500/20 to-pink-500/20">
                     <AlertTriangle className="h-8 w-8 bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent" />
-                  </div>
-                  <div className="ml-4">
+                </div>
+                <div className="ml-4">
                     <p className="text-sm font-medium text-slate-600">Total Alerts</p>
                     <motion.p
                       className="text-3xl font-bold text-red-700"
@@ -188,11 +188,11 @@ export default function Alerts() {
           >
             <div className="card-content">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="flex items-center">
                   <div className="stat-icon bg-gradient-to-br from-amber-500/20 to-orange-500/20">
                     <Clock className="h-8 w-8 bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent" />
-                  </div>
-                  <div className="ml-4">
+                </div>
+                <div className="ml-4">
                     <p className="text-sm font-medium text-slate-600">Open</p>
                     <motion.p
                       className="text-3xl font-bold text-amber-700"
@@ -222,11 +222,11 @@ export default function Alerts() {
           >
             <div className="card-content">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="flex items-center">
                   <div className="stat-icon bg-gradient-to-br from-emerald-500/20 to-teal-500/20">
                     <CheckCircle className="h-8 w-8 bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent" />
-                  </div>
-                  <div className="ml-4">
+                </div>
+                <div className="ml-4">
                     <p className="text-sm font-medium text-slate-600">Resolved</p>
                     <motion.p
                       className="text-3xl font-bold text-emerald-700"
@@ -256,11 +256,11 @@ export default function Alerts() {
           >
             <div className="card-content">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="flex items-center">
                   <div className="stat-icon bg-gradient-to-br from-slate-500/20 to-gray-500/20">
                     <XCircle className="h-8 w-8 bg-gradient-to-r from-slate-500 to-gray-500 bg-clip-text text-transparent" />
-                  </div>
-                  <div className="ml-4">
+                </div>
+                <div className="ml-4">
                     <p className="text-sm font-medium text-slate-600">False Positives</p>
                     <motion.p
                       className="text-3xl font-bold text-slate-700"
