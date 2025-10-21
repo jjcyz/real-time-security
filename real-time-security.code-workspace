@@ -1,34 +1,16 @@
 {
-    "folders": [
-        {
-            "name": "Real-Time Security Dashboard",
-            "path": "."
-        }
-    ],
-    "settings": {
-        "java.configuration.updateBuildConfiguration": "automatic",
-        "java.import.maven.enabled": true,
-        "java.maven.downloadSources": true,
-        "java.project.sourcePaths": [
-            "backend/src/main/java"
-        ],
-        "java.project.outputPath": "backend/target/classes",
-        "java.configuration.runtimes": [],
-        "files.exclude": {
-            "**/target": true,
-            "**/node_modules": true,
-            "**/.classpath": true,
-            "**/.project": true,
-            "**/.settings": true,
-            "**/.factorypath": true
-        }
+  "folders": [
+    {
+      "name": "Backend (Java)",
+      "path": "backend"
     },
-    "extensions": {
-        "recommendations": [
-            "vscjava.vscode-java-pack",
-            "vscjava.vscode-maven",
-            "vscjava.vscode-spring-boot-dashboard",
-            "vscjava.vscode-spring-initializr"
-        ]
+    {
+      "name": "Frontend (React)",
+      "path": "frontend"
     }
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "automatic"
+  }
 }
+

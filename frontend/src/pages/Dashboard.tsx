@@ -14,7 +14,7 @@ export default function Dashboard() {
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: dashboardApi.getStats,
-    refetchInterval: 300000, // 5 minutes instead of 30 seconds
+    refetchInterval: 300000, // 5 min
     refetchOnWindowFocus: false, // Don't refetch when window gains focus
     staleTime: 120000, // Consider data fresh for 2 minutes
     gcTime: 600000 // Keep in cache for 10 minutes
