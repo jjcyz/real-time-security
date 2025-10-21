@@ -12,6 +12,9 @@ Java Spring Boot backend with React frontend for transaction monitoring and frau
 ### Start Backend
 ```bash
 cd backend
+mvn clean compile
+
+# Run 
 mvn spring-boot:run
 ```
 

@@ -10,35 +10,6 @@ export const api = axios.create({
   },
 })
 
-// Request interceptor to add basic auth
-api.interceptors.request.use(
-  (config) => {
-    const username = localStorage.getItem('username')
-    const password = localStorage.getItem('password')
-    if (username && password) {
-      const credentials = btoa(`${username}:${password}`)
-      config.headers.Authorization = `Basic ${credentials}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// Response interceptor to handle auth errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('username')
-      localStorage.removeItem('password')
-      window.location.href = '/login'
-    }
-    return Promise.reject(error)
-  }
-)
-
 export interface User {
   id: number
   email: string
@@ -55,31 +26,25 @@ export interface LoginRequest {
 }
 
 export interface Transaction {
-  id: number
-  transaction_id?: string
+  id?: number
   amount?: number
-  currency: string
-  timestamp?: string
+  currency?: string
   merchant?: string
   location?: string
   payment_method?: string
   user_id?: string
   ip_address?: string
   device_info?: string
-  is_fraudulent: boolean
+  isFraudulent?: boolean
   fraud_score?: number
-  created_at: string
+  createdAt?: string
 }
 
-// Auth API
+// Auth API - Simple login without real authentication
 export const authApi = {
   login: (data: LoginRequest): Promise<{ success: boolean; user: User }> => {
-    // Store credentials for basic auth
-    localStorage.setItem('username', data.username)
-    localStorage.setItem('password', data.password)
-
-    // Test the credentials by making a request to the home endpoint
-    return api.get('/').then(() => ({
+    // Simple demo login - accept any username/password
+    return Promise.resolve({
       success: true,
       user: {
         id: 1,
@@ -90,14 +55,11 @@ export const authApi = {
         role: 'admin' as const,
         created_at: new Date().toISOString()
       }
-    }))
+    })
   },
 
   getMe: (): Promise<User> => {
-    const username = localStorage.getItem('username')
-    if (!username) {
-      return Promise.reject(new Error('Not authenticated'))
-    }
+    const username = localStorage.getItem('username') || 'admin'
     return Promise.resolve({
       id: 1,
       email: `${username}@example.com`,
@@ -115,25 +77,16 @@ export const authApi = {
   }
 }
 
-// Transactions API - matches Java backend endpoints
+// Transactions API - matches our simplified backend
 export const transactionsApi = {
-  getTransactions: (page = 0, size = 20): Promise<{ content: Transaction[]; totalElements: number; totalPages: number }> =>
-    api.get(`/api/transactions?page=${page}&size=${size}`).then(res => res.data),
+  getTransactions: (): Promise<Transaction[]> =>
+    api.get('/transactions').then(res => res.data),
 
-  getSuspiciousTransactions: (page = 0, size = 20): Promise<{ content: Transaction[]; totalElements: number; totalPages: number }> =>
-    api.get(`/api/transactions/suspicious?page=${page}&size=${size}`).then(res => res.data),
+  getSuspiciousTransactions: (): Promise<Transaction[]> =>
+    api.get('/transactions/suspicious').then(res => res.data),
 
   createTransaction: (transaction: Partial<Transaction>): Promise<Transaction> =>
-    api.post('/api/transactions', transaction).then(res => res.data),
-
-  getTransaction: (id: number): Promise<Transaction> =>
-    api.get(`/api/transactions/${id}`).then(res => res.data),
-
-  updateTransaction: (id: number, transaction: Partial<Transaction>): Promise<Transaction> =>
-    api.put(`/api/transactions/${id}`, transaction).then(res => res.data),
-
-  deleteTransaction: (id: number): Promise<void> =>
-    api.delete(`/api/transactions/${id}`).then(res => res.data),
+    api.post('/transactions', transaction).then(res => res.data),
 }
 
 export const dashboardApi = {
@@ -145,8 +98,8 @@ export const dashboardApi = {
   },
 
   getRecentTransactions: (limit = 10): Promise<Transaction[]> =>
-    transactionsApi.getTransactions(0, limit).then(res => res.content),
+    transactionsApi.getTransactions().then(transactions => transactions.slice(0, limit)),
 
   getSuspiciousTransactions: (limit = 20): Promise<Transaction[]> =>
-    transactionsApi.getSuspiciousTransactions(0, limit).then(res => res.content),
+    transactionsApi.getSuspiciousTransactions().then(transactions => transactions.slice(0, limit)),
 }
