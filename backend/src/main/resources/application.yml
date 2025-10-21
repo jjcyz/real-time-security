@@ -1,37 +1,85 @@
 server:
   port: 8080
-  # Optimize server settings
   tomcat:
     threads:
       max: 200
       min-spare: 10
-    max-connections: 8192
-    accept-count: 100
-    connection-timeout: 20000
 
 spring:
   application:
     name: security-dashboard
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  # Optimize JPA/Hibernate settings
+
+  profiles:
+    active: dev
+
   jpa:
-    hibernate:
-      ddl-auto: none
     show-sql: false
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
-        format_sql: false
-        use_sql_comments: false
+        format_sql: true
+        use_sql_comments: true
+    open-in-view: false
 
-# Optimize logging to reduce I/O
 logging:
   level:
     dashboard: INFO
     org.springframework: WARN
-    org.hibernate: WARN
-    org.apache.tomcat: WARN
+    org.hibernate.SQL: DEBUG
   pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
+
+---
+# Development Profile (H2 Database)
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:mem:securitydb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+---
+# Production Profile (PostgreSQL)
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/security_dashboard}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
