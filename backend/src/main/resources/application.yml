@@ -18,15 +18,33 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
-        use_sql_comments: true
+        format_sql: false
+        use_sql_comments: false
     open-in-view: false
+
+  kafka:
+    enabled: false  # Set to true when Kafka is running
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: fraud-detection-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: dashboard.event.TransactionEvent
+      auto-offset-reset: earliest
 
 logging:
   level:
     dashboard: INFO
     org.springframework: WARN
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: WARN
+    org.apache.kafka: INFO
   pattern:
     console: "%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
 

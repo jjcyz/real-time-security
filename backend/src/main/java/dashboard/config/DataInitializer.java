@@ -4,7 +4,10 @@ import dashboard.model.Transaction;
 import dashboard.model.User;
 import dashboard.repository.TransactionRepository;
 import dashboard.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -17,22 +20,33 @@ import java.util.Random;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Value("${data.init.enabled:true}")
+    private boolean dataInitEnabled;
+
     @Override
     public void run(String... args) {
-        // Only initialize if database is empty
-        if (userRepository.count() == 0) {
+        // Only initialize if enabled and database is empty
+        if (dataInitEnabled && userRepository.count() == 0) {
             initializeData();
+        } else if (!dataInitEnabled) {
+            logger.info("Data initialization is disabled (data.init.enabled=false)");
+        } else {
+            logger.info("Database already has data, skipping initialization");
         }
     }
 
     private void initializeData() {
-        System.out.println("Initializing database with sample data...");
+        logger.info("==================================================");
+        logger.info("Initializing database with sample data...");
+        logger.info("==================================================");
 
         // Create sample users
         User user1 = new User("john_doe", "john@example.com", "John Doe");
@@ -45,7 +59,7 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.save(user3);
         userRepository.save(user4);
 
-        System.out.println("Created 4 sample users");
+        logger.info("✅ Created 4 sample users");
 
         // Create sample transactions
         Random random = new Random();
@@ -74,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
             transactionRepository.save(transaction);
         }
 
-        System.out.println("Created 50 legitimate transactions");
+        logger.info("✅ Created 50 legitimate transactions");
 
         // Create 10 fraudulent transactions
         for (int i = 0; i < 10; i++) {
@@ -96,10 +110,12 @@ public class DataInitializer implements CommandLineRunner {
             transactionRepository.save(transaction);
         }
 
-        System.out.println("Created 10 fraudulent transactions");
-        System.out.println("Database initialization complete!");
-        System.out.println("Total users: " + userRepository.count());
-        System.out.println("Total transactions: " + transactionRepository.count());
+        logger.info("✅ Created 10 fraudulent transactions");
+        logger.info("==================================================");
+        logger.info("✅ Database initialization complete!");
+        logger.info("   Total users: {}", userRepository.count());
+        logger.info("   Total transactions: {}", transactionRepository.count());
+        logger.info("==================================================");
     }
 
     private String getFraudReason(Random random) {
