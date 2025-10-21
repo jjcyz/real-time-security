@@ -1,5 +1,13 @@
 server:
   port: 8080
+  # Optimize server settings
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    max-connections: 8192
+    accept-count: 100
+    connection-timeout: 20000
 
 spring:
   application:
@@ -8,7 +16,22 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  # Optimize JPA/Hibernate settings
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
 
+# Optimize logging to reduce I/O
 logging:
   level:
     dashboard: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.apache.tomcat: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

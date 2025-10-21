@@ -7,12 +7,17 @@ import { AuthProvider } from './services/auth'
 import App from './App.tsx'
 import './index.css'
 
-// Create a client
+// Create a client with optimized settings
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      refetchOnReconnect: 'always',
+      staleTime: 60000, // 1 minute default stale time
+      gcTime: 300000, // 5 minutes default cache time
+      refetchInterval: false, // Disable automatic polling by default
     },
   },
 })
