@@ -58,15 +58,11 @@ export default function Login() {
         className="relative max-w-md w-full space-y-8"
       >
         <div className="glass-card text-center">
-          <motion.div
-            className="flex justify-center mb-6"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          >
+          <div className="flex justify-center mb-6">
             <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20">
               <Shield className="h-16 w-16 text-blue-600" />
             </div>
-          </motion.div>
+          </div>
 
           <motion.h2
             className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2"

@@ -16,13 +16,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    if (token) {
-      // Verify token and get user info
+    const username = localStorage.getItem('username')
+    if (username) {
+      // Verify credentials and get user info
       authApi.getMe()
         .then(setUser)
         .catch(() => {
-          localStorage.removeItem('access_token')
+          localStorage.removeItem('username')
+          localStorage.removeItem('password')
         })
         .finally(() => setIsLoading(false))
     } else {
@@ -32,20 +33,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (username: string, password: string) => {
     const response = await authApi.login({ username, password })
-    localStorage.setItem('access_token', response.access_token)
+    // Store credentials for basic auth (no access_token in this implementation)
+    localStorage.setItem('username', username)
+    localStorage.setItem('password', password)
 
-    const userData = await authApi.getMe()
-    setUser(userData)
+    setUser(response.user)
   }
 
-  const register = async (email: string, username: string, password: string, fullName?: string) => {
-    await authApi.register({ email, username, password, full_name: fullName })
-    // After registration, automatically log in
+  const register = async (_email: string, username: string, password: string, _fullName?: string) => {
+    // For now, just log in with the provided credentials
+    // In a real app, you'd call a registration API endpoint
     await login(username, password)
   }
 
   const logout = () => {
-    localStorage.removeItem('access_token')
+    localStorage.removeItem('username')
+    localStorage.removeItem('password')
     setUser(null)
   }
 

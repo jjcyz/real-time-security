@@ -81,3 +81,23 @@ temp/
 *.bak
 *.backup
 *.old
+
+# Java build artifacts
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
