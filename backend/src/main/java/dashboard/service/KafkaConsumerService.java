@@ -62,7 +62,7 @@ public class KafkaConsumerService {
             transaction.setFraudReason((String) fraudAnalysis.get("fraudReason"));
             transactionRepository.save(transaction);
 
-            logger.info("✅ Fraud analysis completed for transaction {}: Score={}, Fraudulent={}",
+            logger.info("Fraud analysis completed for transaction {}: Score={}, Fraudulent={}",
                 transaction.getId(),
                 fraudAnalysis.get("fraudScore"),
                 fraudAnalysis.get("isFraudulent"));
@@ -81,7 +81,7 @@ public class KafkaConsumerService {
             }
 
         } catch (Exception e) {
-            logger.error("❌ Error processing transaction event: {}", event.getEventId(), e);
+            logger.error("Error processing transaction event: {}", event.getEventId(), e);
         }
     }
 
@@ -98,7 +98,6 @@ public class KafkaConsumerService {
         logger.warn("Fraud Score: {}", alert.getFraudScore());
         logger.warn("Reason: {}", alert.getFraudReason());
         logger.warn("Severity: {}", alert.getSeverity());
-        logger.warn("🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨");
 
         // In production: Send email, SMS, push notification, etc.
     }
