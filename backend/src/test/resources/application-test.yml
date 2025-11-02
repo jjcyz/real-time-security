@@ -1,0 +1,36 @@
+# Test Profile Configuration
+# Uses H2 in-memory database - fast and isolated
+
+spring:
+  profiles:
+    active: test
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # Drop and create schema for each test
+    show-sql: false # Don't spam console with SQL
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  kafka:
+    enabled: false # Disable Kafka in tests unless specifically testing it
+
+# Disable data initialization in tests
+data:
+  init:
+    enabled: false
+
+logging:
+  level:
+    dashboard: WARN
+    org.springframework: WARN
+    org.hibernate: WARN
